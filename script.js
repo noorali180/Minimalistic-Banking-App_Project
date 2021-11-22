@@ -225,4 +225,32 @@ const updateUI = function (currentAccount){
 
 updateUI(currentAccount);
 
+// LOGIN FUNCTIONALITY...
+loginBtn.addEventListener('click', function (e){
+    e.preventDefault();
+
+    const user = loginUserInput.value;
+    const pin = +loginPinInput.value;
+
+    currentAccount = accounts.find(acc => user === acc.userName);
+    console.log(currentAccount);
+
+    if(currentAccount?.pin === pin){
+        welcome.textContent = `Good Day, ${currentAccount.owner.split(' ')[0]} 😊`;
+        balanceDate.textContent = intlDate(currentAccount.locale);
+        updateUI(currentAccount);
+
+        containerApp.style.opacity = 1;
+        loginUserInput.value = loginPinInput.value = '';
+        loginUserInput.blur();
+        loginPinInput.blur();
+    }
+    else{
+        alert('User not FOUND or INVALID Pin.');
+        loginUserInput.value = loginPinInput.value = '';
+        loginUserInput.blur();
+        loginPinInput.blur();
+    }
+});
+
 
