@@ -178,6 +178,7 @@ createUserNames(accounts);
 const displayBalance = function (currentAccount){
     const totalBalance = currentAccount.movements.reduce((accum, mov) => accum + mov, 0);
     const intlBalance = intlNumber(currentAccount.locale, totalBalance);
+    currentAccount.balance = totalBalance;
 
     balanceLabel.textContent = intlBalance;
 }
@@ -233,7 +234,6 @@ loginBtn.addEventListener('click', function (e){
     const pin = +loginPinInput.value;
 
     currentAccount = accounts.find(acc => user === acc.userName);
-    console.log(currentAccount);
 
     if(currentAccount?.pin === pin){
         welcome.textContent = `Good Day, ${currentAccount.owner.split(' ')[0]} 😊`;
@@ -253,4 +253,29 @@ loginBtn.addEventListener('click', function (e){
     }
 });
 
+// TRANSFER FUNCTIONALITY...
+transferBtn.addEventListener('click', function(e){
+    e.preventDefault();
 
+    const user = transferUserInput.value;
+    const amount = +transferAmountInput.value;
+
+    const userAccount = accounts.find(acc => acc.userName === user);
+
+    if(!userAccount) alert('Sorry User not FOUND.');
+    else if(amount <= 0) alert('Enter a valid amount to transfer.');
+    else if(amount > currentAccount.balance) alert('Don\'t have enough balance.')
+    else{
+        userAccount.movements.push(amount);
+        userAccount.movementsDates.push(new Date().toISOString());
+
+        currentAccount.movements.push(-amount);
+        currentAccount.movementsDates.push(new Date().toISOString());
+
+        updateUI(currentAccount);
+    }
+
+    transferAmountInput.value = transferUserInput.value = '';
+    transferUserInput.blur();
+    transferAmountInput.blur();
+});
