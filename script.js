@@ -279,3 +279,25 @@ transferBtn.addEventListener('click', function(e){
     transferUserInput.blur();
     transferAmountInput.blur();
 });
+
+// CLOSE FUNCTIONALITY
+closeBtn.addEventListener('click', function(e){
+    e.preventDefault();
+
+    const closeUser = closeUserInput.value;
+    const closePin = +closePinInput.value;
+
+    const closeAccIndex = accounts.findIndex(acc => acc.userName === closeUser);
+    
+    if(closeUser !== currentAccount.userName) alert('Sorry You are not LOGGED IN.');
+    else if(closePin !== currentAccount.pin) alert('Sorry incorrect PIN');
+    else{
+        accounts.splice(closeAccIndex, 1);
+        containerApp.style.opacity = 0;
+        welcome.textContent = 'Log in to get started!'
+    }
+
+    closeUserInput.value = closePinInput.value = '';
+    closeUserInput.blur();
+    closePinInput.blur();
+});
