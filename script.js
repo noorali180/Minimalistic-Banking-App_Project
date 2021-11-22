@@ -321,3 +321,12 @@ closeBtn.addEventListener('click', function(e){
     closeUserInput.blur();
     closePinInput.blur();
 });
+
+// SORT FUNCTIONALITY
+let sort = true;
+sortBtn.addEventListener('click', function(e){
+    e.preventDefault();
+
+    displayMovements(currentAccount, sort);
+    sort = !sort;
+});
