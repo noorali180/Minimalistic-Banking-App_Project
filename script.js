@@ -280,6 +280,26 @@ transferBtn.addEventListener('click', function(e){
     transferAmountInput.blur();
 });
 
+// LOAN FUNCITONALITY
+loanBtn.addEventListener('click', function(e){
+    e.preventDefault();
+
+    const loanAmount = +loanAmountInput.value;
+
+    if(loanAmount <= 0) alert('Please insert a valid amount.');
+    if(currentAccount.movements.some(mov => mov >= loanAmount * 0.1)) alert('Not Eligible for LOAN.');
+    else{
+        setTimeout(() => {
+            currentAccount.movements.push(loanAmount);
+            currentAccount.movementsDates.push(new Date().toISOString());
+            updateUI(currentAccount);
+        }, 5000);
+    }
+
+    loanAmountInput.value = '';
+    loanAmountInput.blur();
+})
+
 // CLOSE FUNCTIONALITY
 closeBtn.addEventListener('click', function(e){
     e.preventDefault();
