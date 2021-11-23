@@ -1,6 +1,6 @@
 # Minimalistic-Banking-App_(Project)
 
-small javascript project (game).
+small javascript project.
 
 ## Default Accounts (usernames : pins):
 - Noor Ali: na 1111
