@@ -60,7 +60,7 @@ const account3 = {
 };
   
 const account4 = {
-    owner: 'Muhammed Ather',
+    owner: 'Zubair Ali',
     movements: [430, 1000, 700, 50, 90],
     movementsDates: [
         "2019-11-18T21:31:17.178Z",
@@ -126,7 +126,7 @@ let currentAccount = account1, timer;
 
 // FUNCTIONALITIES>>>
 
-//
+// function to internationalize numbers...
 const intlNumber = function(locale, number){
     return new Intl.NumberFormat(locale, {
         style: 'currency',
@@ -134,7 +134,7 @@ const intlNumber = function(locale, number){
     }).format(number);
 }
 
-// 
+// function to internationalize movements dates...
 const intlMovDate = function(locale, date){
     const now = new Date();
     const movDate = new Date(date);
@@ -152,7 +152,7 @@ const intlMovDate = function(locale, date){
     }).format(movDate);
 }
 
-//
+// function to internationalize main date...
 const intlDate = function (locale) {
     const now = new Date();
 
@@ -189,7 +189,7 @@ const startLogoutTimer = function(){
     return timer;
 }
 
-//
+// function to create usernames...
 const createUserNames = function (accounts) {
     accounts.forEach((acc) => acc.userName = acc.owner.split(' ')
     .map((word) => word[0])
@@ -198,7 +198,7 @@ const createUserNames = function (accounts) {
 }
 createUserNames(accounts);
 
-//
+// function to calculate and display total balance...
 const displayBalance = function (currentAccount){
     const totalBalance = currentAccount.movements.reduce((accum, mov) => accum + mov, 0);
     const intlBalance = intlNumber(currentAccount.locale, totalBalance);
@@ -207,7 +207,7 @@ const displayBalance = function (currentAccount){
     balanceLabel.textContent = intlBalance;
 }
 
-//
+// function to display movements...
 const displayMovements = function (currentAccount, sort = false){
     containerMovements.innerHTML = '';
     const movs = sort ? currentAccount.movements.slice().sort((a, b) => a - b) : currentAccount.movements;
@@ -226,7 +226,7 @@ const displayMovements = function (currentAccount, sort = false){
     })
 }
 
-// 
+// function to calculate and display summary...
 const displaySummary = function(currentAccount){
     const sumIn = intlNumber(currentAccount.locale, currentAccount.movements.filter(mov => mov > 0).reduce((accum, dep) => accum + dep, 0));
     summaryIn.textContent = sumIn;
@@ -241,14 +241,12 @@ const displaySummary = function(currentAccount){
     summaryInterest.textContent = sumInterest;
 }
 
-// 
+// function to update complete app UI...
 const updateUI = function (currentAccount){
     displayBalance(currentAccount);
     displayMovements(currentAccount);
     displaySummary(currentAccount);
 }
-
-updateUI(currentAccount);
 
 // LOGIN FUNCTIONALITY...
 loginBtn.addEventListener('click', function (e){
@@ -289,9 +287,12 @@ transferBtn.addEventListener('click', function(e){
 
     const userAccount = accounts.find(acc => acc.userName === user);
 
+    if(user === '' || amount === '') return;
+
     if(!userAccount) alert('Sorry User not FOUND.');
     else if(amount <= 0) alert('Enter a valid amount to transfer.');
-    else if(amount > currentAccount.balance) alert('Don\'t have enough balance.')
+    else if(amount > currentAccount.balance) alert('Don\'t have enough balance.');
+    else if(user === currentAccount.userName) alert('Cannot transfer money to own account!');
     else{
         userAccount.movements.push(amount);
         userAccount.movementsDates.push(new Date().toISOString());
@@ -313,7 +314,9 @@ loanBtn.addEventListener('click', function(e){
 
     const loanAmount = +loanAmountInput.value;
 
-    if(loanAmount <= 0) alert('Please insert a valid amount.');
+    if(loanAmount === 0) return;
+
+    if(loanAmount < 0) alert('Please insert a valid amount.');
     if(currentAccount.movements.some(mov => mov >= loanAmount * 0.1)) alert('Not Eligible for LOAN.');
     else{
         setTimeout(() => {
@@ -335,13 +338,17 @@ closeBtn.addEventListener('click', function(e){
     const closePin = +closePinInput.value;
 
     const closeAccIndex = accounts.findIndex(acc => acc.userName === closeUser);
+
+    if(closeUser === '' || closePin === '') return;
     
     if(closeUser !== currentAccount.userName) alert('Sorry You are not LOGGED IN.');
     else if(closePin !== currentAccount.pin) alert('Sorry incorrect PIN');
     else{
         accounts.splice(closeAccIndex, 1);
         containerApp.style.opacity = 0;
-        welcome.textContent = 'Log in to get started!'
+        welcome.textContent = 'Log in to get started!';
+
+        if(timer) clearInterval(timer);
     }
 
     closeUserInput.value = closePinInput.value = '';
