@@ -121,7 +121,7 @@ const sortBtn = document.querySelector('.btn_sort');
 
 // x----x----x----x----x----x----x----x----x-----x-----x-----x-----x-----x-----x-----x-----x
 
-let currentAccount = account1;
+let currentAccount = account1, timer;
 
 
 // FUNCTIONALITIES>>>
@@ -164,6 +164,30 @@ const intlDate = function (locale) {
     }).format(now);
 }
 
+// LOGOUT TIMER
+const startLogoutTimer = function(){
+    let time = 300; // 5 minutes...
+    
+    const rapid = function(){
+        const min = String(Math.trunc(time / 60)).padStart(2, 0);
+        const sec = String(time % 60).padStart(2, 0);
+
+        labelTimer.textContent = `${min}:${sec}`;
+
+        if(time === 0) {
+            clearInterval(timer);
+            welcome.textContent = 'Log in to get started';
+            containerApp.style.opacity = 0;
+        }
+
+        time--;
+    }
+
+    rapid();
+    const timer = setInterval(rapid, 1000);
+
+    return timer;
+}
 
 //
 const createUserNames = function (accounts) {
@@ -239,6 +263,9 @@ loginBtn.addEventListener('click', function (e){
         welcome.textContent = `Good Day, ${currentAccount.owner.split(' ')[0]} 😊`;
         balanceDate.textContent = intlDate(currentAccount.locale);
         updateUI(currentAccount);
+
+        if(timer) clearInterval(timer);
+        timer = startLogoutTimer();
 
         containerApp.style.opacity = 1;
         loginUserInput.value = loginPinInput.value = '';
